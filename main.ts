@@ -31,6 +31,24 @@ function updatePX (whichPlayer: string) {
         }
     }
 }
+function isplayerxwinner (enemyboats: Sprite[][], hitormissx: any[]) {
+    killcount = 0
+    for (let index = 0; index <= 4; index++) {
+        currentboatboomcounter = 0
+        for (let currentboomsprite of enemyboats[index]) {
+            for (let index of hitormissx) {
+                if (grid.spriteRow(currentboomsprite) == grid.spriteRow(currentboomsprite) && grid.spriteCol(currentboomsprite) == grid.spriteCol(currentboomsprite)) {
+                    currentboatboomcounter += 1
+                    break;
+                }
+            }
+        }
+        if (currentboatboomcounter == enemyboats[index].length) {
+            killcount += 1
+        }
+    }
+    return killcount
+}
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (currentPlayer == "Player1") {
         rotateFlag = boatRotateArrayP1[currentBoat]
@@ -42,8 +60,8 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 function makeBoatVisible (boatArray: Sprite[]) {
-    for (let currentBoatSprite of boatArray) {
-        currentBoatSprite.setFlag(SpriteFlag.Invisible, false)
+    for (let currentboomsprite of boatArray) {
+        currentboomsprite.setFlag(SpriteFlag.Invisible, false)
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -146,7 +164,7 @@ function isHitOrMiss (enemyBoats: Sprite[][], hitOrMissPX: Sprite[]) {
                     `, SpriteKind.Projectile)
                 grid.place(boomSprite, grid.getLocation(cursor))
                 hitOrMissPX.push(boomSprite)
-                game.splash("" + currentPlayer + "   HIT!!")
+                game.splash("" + currentPlayer + "   HIT!!" + convertToText(isplayerxwinner(enemyBoats, hitOrMissPX)) + " boats destroyed!")
                 return 1
             }
         }
@@ -573,6 +591,8 @@ let boomSprite: Sprite = null
 let iterator = 0
 let hitOrMissP2: Sprite[] = []
 let hitOrMissP1: Sprite[] = []
+let currentboatboomcounter = 0
+let killcount = 0
 let boatRotateArrayP2: string[] = []
 let boatSpriteArrayP2: Sprite[][] = []
 let boatRotateArrayP1: string[] = []
